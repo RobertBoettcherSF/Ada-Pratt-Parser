@@ -50,11 +50,16 @@ procedure Tests is
 
    --  Helper to ensure Evaluation_Error is correctly raised
    function Check_Eval_Error (Expr : String) return Boolean is
-      AST    : AST_Ptr := null;
-      Result : Integer;
+      AST : AST_Ptr := null;
    begin
-      AST    := Parse (Expr);
-      Result := Evaluate (AST);
+      AST := Parse (Expr);
+      
+      --  Evaluate the AST to trigger the exception, consuming the 
+      --  return value directly to avoid "assigned but never read" warnings.
+      if Evaluate (AST) = 0 then
+         null;
+      end if;
+      
       Free_AST (AST);
       return False; -- Should not reach here
    exception
